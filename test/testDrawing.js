@@ -27,9 +27,13 @@ function draw() {
 
 
 function fakeData() {
-	for(var i = 0; i < 15; i++) {
-		data.push([Math.floor(Math.random() * 10) + 95, i + 1]);
+	for(var i = 0; i < 250; i++) {
+		data.push([Math.random() * 10 + 95, i + 1]);
 	}
+}
+
+function addPoint() {
+	data.push([Math.random() * 10 + 95, data.length + 1]);
 }
 var avg = 100;
 var s = 1;
@@ -227,10 +231,37 @@ function drawGraph() {
 	for(var i = 0; i < data.length; i++) {
 		// tick mark and label on x axis
 		var xPos = map(data[i][1], xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
-		strokeWeight(tickWidth);
+		if(data.length > 200) {
+			strokeWeight(tickWidth / 2);
+		}
+		else {
+			strokeWeight(tickWidth);
+		}
 		line(xPos, height - innerGraphBuffer + tickLength / 2, xPos, height - innerGraphBuffer - tickLength / 2);
 		strokeWeight(0);
-		text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+		if(data.length > 40){
+			textSize(8);
+		}
+		else {
+			textSize(12);
+		}
+
+		// scale the label text so that we avoid overlapping
+		if(data.length < 75) {
+			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+		}
+		else if(data.length > 75 && data.length <= 105 && i%2==0) {
+			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+		}
+		else if(data.length > 105 && data.length <= 145 && i%3==0) {
+			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+		}
+		else if(data.length > 145 && data.length <= 200 && i%5==4) {
+			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+		}
+		else if(data.length > 200 && i%10==9) {
+			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+		}
 
 		// plot point
 		var x = xPos;
@@ -250,13 +281,14 @@ function drawGraph() {
 	}
 
 	// other labels
+	textSize(12);
 	textAlign(CENTER, CENTER);
 	strokeWeight(0);
 	text('Control Chart for Statistical Process Control', width / 2, 25);
 	text('Time Value: (UNIT)', width / 2, height - 25);
 	translate(width / 2, height / 2);
 	rotate(-PI/2);
-	text('Mean Value: (UNIT)', 0, -(width / 2) + 15);
+	text('Metric Value: (UNIT)', 0, -(width / 2) + 15);
 	rotate(PI/2);
 	translate(0, 0);
 }

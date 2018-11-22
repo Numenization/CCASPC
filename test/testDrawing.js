@@ -4,6 +4,7 @@ var tickLength = 15; // px
 var strokeColor = '#000000'
 var canvas = null;
 var innerGraphBuffer = 75;
+var dotSize = 4;
 
 var data = [];
 
@@ -25,8 +26,7 @@ function draw() {
 
 function fakeData() {
 	for(var i = 0; i < 10; i++) {
-		data.push([Math.floor(Math.random() * 10) + 95, i]);
-		console.log(data[i]);
+		data.push([Math.floor(Math.random() * 10) + 95, i + 1]);
 	}
 }
 var avg = 100;
@@ -47,6 +47,26 @@ function minV(x) {
 	for(var i = 0; i < x.length; i++) {
 		if(x[i][0] < r) {
 			r = x[i][0];
+		}
+	}
+	return r;
+}
+
+function maxT(x) {
+	var r = x[0][1];
+	for(var i = 0; i < x.length; i++) {
+		if(x[i][1] > r) {
+			r = x[i][1];
+		}
+	}
+	return r;
+}
+
+function minT(x) {
+	var r = x[0][1];
+	for(var i = 0; i < x.length; i++) {
+		if(x[i][1] < r) {
+			r = x[i][1];
 		}
 	}
 	return r;
@@ -125,16 +145,16 @@ function drawGraph() {
 	var yMax = 0;
 
 	// upper bound
-	if(maxV(data) > avg + 4*s) {
-		yMax = maxV(data);
+	if(maxV(data) > avg + 3*s) {
+		yMax = maxV(data) + s;
 	}
 	else {
 		yMax = avg + 4*s;
 	}
 
 	// lower bound
-	if(minV(data) < avg - 4*s) {
-		yMin = minV(data);
+	if(minV(data) < avg - 3*s) {
+		yMin = minV(data) - s;
 	}
 	else {
 		yMin = avg - 4*s;
@@ -167,23 +187,64 @@ function drawGraph() {
 	strokeWeight(0);
 	text(avg - 3*s, innerGraphBuffer - tickLength, yPos);
 
-	// x axis ticks with labels
-	textAlign(CENTER, CENTER);
-	distance = width - (innerGraphBuffer + innerGraphBuffer / 2)
-	var xTickSpacing = 0;
+
+	// get bounds for x axis
+	var xMin = 0;
+	var xMax = 0;
+
 	if(data.length > 5) {
-		xTickSpacing = distance / (data.length + 1);
+		xMin = minT(data) - 1;
+		xMax = maxT(data) + 1;
 	}
 	else {
-		xTickSpacing = distance / 6;
+		xMin = 0;
+		xMax = 6;
 	}
 
+	// draw lines between points
+	// we have to do this before drawing the points otherwise the lines will get drawn on top of the points
+	// which will not look correct
+	lastPoint = null;
 	for(var i = 0; i < data.length; i++) {
-		xPos = innerGraphBuffer + (i + 1) * xTickSpacing;
+		var x = map(data[i][1], xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
+		var y = map(data[i][0], yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
+
+		// draw line between points
+		if(lastPoint == null) {
+			lastPoint = [x,y];
+		}
+		else {
+			strokeWeight(tickWidth);
+			line(lastPoint[0], lastPoint[1], x, y);
+			lastPoint = [x,y];
+		}
+	}
+
+	textAlign(CENTER, CENTER);
+	// plot points
+	for(var i = 0; i < data.length; i++) {
+		// tick mark and label on x axis
+		var xPos = map(data[i][1], xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
 		strokeWeight(tickWidth);
-		line(xPos, height - innerGraphBuffer + tickLength / 2, xPos, height - innerGraphBuffer - tickLength / 2)
+		line(xPos, height - innerGraphBuffer + tickLength / 2, xPos, height - innerGraphBuffer - tickLength / 2);
 		strokeWeight(0);
-		text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2);
+		text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+
+		// plot point
+		var x = xPos;
+		var y = map(data[i][0], yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
+		
+		stroke(0);
+
+		if(data[i][0] >= avg + 3 * s || data[i][0] <= avg - 3 * s) { 
+			stroke(255, 0, 0);
+		}
+		else {
+			stroke(0);
+		}
+		strokeWeight(dotSize);
+		ellipse(x, y, dotSize, dotSize);
+		stroke(0);
 	}
 
 	// other labels

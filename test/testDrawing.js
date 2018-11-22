@@ -6,6 +6,8 @@ var canvas = null;
 var innerGraphBuffer = 75;
 var dotSize = 4;
 
+var needsToUpdate = true;
+
 var data = [];
 
 function setup() {
@@ -25,7 +27,7 @@ function draw() {
 
 
 function fakeData() {
-	for(var i = 0; i < 10; i++) {
+	for(var i = 0; i < 15; i++) {
 		data.push([Math.floor(Math.random() * 10) + 95, i + 1]);
 	}
 }
@@ -192,13 +194,13 @@ function drawGraph() {
 	var xMin = 0;
 	var xMax = 0;
 
-	if(data.length > 5) {
+	if(data.length > 10) {
 		xMin = minT(data) - 1;
 		xMax = maxT(data) + 1;
 	}
 	else {
 		xMin = 0;
-		xMax = 6;
+		xMax = 11;
 	}
 
 	// draw lines between points

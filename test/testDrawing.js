@@ -10,6 +10,7 @@ var needsToUpdate = true;
 
 var data = [];
 
+// p5 function: gets called on script startup
 function setup() {
 	var holder = document.getElementById('canvas-holder');
 	var info = holder.getBoundingClientRect();
@@ -20,6 +21,7 @@ function setup() {
 	drawGraph();
 }
 
+// p5 function: gets called every frame
 function draw() {
 	background(240);
 	drawGraph();
@@ -27,14 +29,21 @@ function draw() {
 
 
 function fakeData() {
-	for(var i = 0; i < 250; i++) {
-		data.push([Math.random() * 10 + 95, i + 1]);
+	for(var i = 0; i < 100; i++) {
+		//data.push([Math.random() * 10 + 95, i + 1]);
+		data.push([Math.sin(i / 3) * 2 + 100, i+1])
 	}
 }
 
-function addPoint() {
+function addRandom() {
 	data.push([Math.random() * 10 + 95, data.length + 1]);
 }
+
+function addPoint() {
+	data.push([parseFloat(document.getElementById('val').value), data.length + 1]);
+}
+
+
 var avg = 100;
 var s = 1;
 
@@ -247,13 +256,14 @@ function drawGraph() {
 		}
 
 		// scale the label text so that we avoid overlapping
+		// highest level of scaling works well with data sets less than 500 points
 		if(data.length < 75) {
 			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(data.length > 75 && data.length <= 105 && i%2==0) {
+		else if(data.length > 75 && data.length <= 105 && i%2==1) {
 			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(data.length > 105 && data.length <= 145 && i%3==0) {
+		else if(data.length > 105 && data.length <= 145 && i%3==2) {
 			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 		else if(data.length > 145 && data.length <= 200 && i%5==4) {

@@ -16,21 +16,42 @@ function Chart(metric=0, time=0) {
 
 Chart.prototype.update = function () {
 	this.numberOfPoints = this.points.length;
-	this.mean = calcMean(points);
-	this.median = calcMed(points);
-	this.max = calcMax(points);
-	this.min = calcMin(points);
-	this.maxTime = calcMaxTime(points);
-	this.minTime = calcMinTime(points);
-	this.variance = calcVar(points);
-	this.stdDeviation = calcStdDev(points);
+	this.mean = calcMean(this.points);
+	this.median = calcMed(this.points);
+	this.max = calcMax(this.points);
+	this.min = calcMin(this.points);
+	this.maxTime = calcMaxTime(this.points);
+	this.minTime = calcMinTime(this.points);
+	this.variance = calcVar(this.points);
+	this.stdDeviation = calcStdDev(this.points);
 }
 
 Chart.prototype.addPoint = function(point) {
 	if(!(point instanceof Point))
 		return;
-	points.push(point);
+	this.points.push(point);
 	this.update();
+}
+
+Chart.prototype.getMetric = function() {
+	if(this.metricType === 0) {
+		return "KLOC";
+	}
+	else if(this.metricType === 1) {
+		return "Function Points";
+	}
+}
+
+Chart.prototype.getTime = function() {
+	if(this.timeType === 0) {
+		return "Days";
+	}
+	else if(this.timeType === 1) {
+		return "Weeks";
+	}
+	else if(this.timeType === 2) {
+		return "Months";
+	}
 }
 
 // point class definition

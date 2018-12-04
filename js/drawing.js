@@ -101,6 +101,12 @@ function drawGraph() {
 	line(innerGraphBuffer - 1, innerGraphBuffer, innerGraphBuffer - 1, height - innerGraphBuffer);
 	line(width - innerGraphBuffer / 2, innerGraphBuffer, width - innerGraphBuffer / 2, height - innerGraphBuffer);
 
+	// check if we have valid data, if we don't the program will hang
+	if(chart.numberOfPoints < 3)
+		return;
+
+	console.log('got to data set up');
+
 	// set up some chart data
 	var avg = chart.mean;
 	var s = chart.stdDeviation;
@@ -108,6 +114,8 @@ function drawGraph() {
 	var max = chart.max;
 	var minTime = chart.minTime;
 	var maxTime = chart.maxTime;
+
+	console.log('got passed data set up');
 
 	// come up with optimal bounds for y-axis
 	var yMin = 0;
@@ -129,6 +137,10 @@ function drawGraph() {
 		yMin = avg - 4*s;
 	}
 
+
+
+	console.log('set up y axis bounds');
+
 	textAlign(RIGHT,CENTER);
 	// y axis ticks with labels (label mean, UCL, LCL)
 	// mean tick
@@ -140,12 +152,17 @@ function drawGraph() {
 
 	// UCL tick
 	yPos = map(avg + 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
+	console.log('got y pos')
 	strokeWeight(tickWidth);
 	line(innerGraphBuffer - tickLength / 2, yPos, innerGraphBuffer + tickLength / 2, yPos);
+	console.log('drew tick')
 	strokeWeight(tickWidth / 2);
 	dashedLine(innerGraphBuffer + tickLength / 2 + 5, yPos, width - innerGraphBuffer / 2, yPos, 5, 5);
+	console.log('drew dashed line')
 	strokeWeight(0);
 	text(avg + 3*s, innerGraphBuffer - tickLength, yPos);
+
+	console.log('drew ucl line')
 
 	// LCL tick
 	yPos = map(avg - 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
@@ -156,14 +173,15 @@ function drawGraph() {
 	strokeWeight(0);
 	text(avg - 3*s, innerGraphBuffer - tickLength, yPos);
 
+	console.log('got to setting up bounds');
 
 	// get bounds for x axis
 	var xMin = 0;
 	var xMax = 0;
 
 	if(chart.numberOfPoints > 10) {
-		xMin = chart.minTime - 1;
-		xMax = chart.maxTime + 1;
+		xMin = minTime - 1;
+		xMax = maxTime + 1;
 	}
 	else {
 		xMin = 0;
@@ -249,10 +267,10 @@ function drawGraph() {
 	textAlign(CENTER, CENTER);
 	strokeWeight(0);
 	text('Control Chart for Statistical Process Control', width / 2, 25);
-	text('Time Value: (UNIT)', width / 2, height - 25);
+	text('Time Value: (' + chart.getTime() + ')', width / 2, height - 25);
 	translate(width / 2, height / 2);
 	rotate(-PI/2);
-	text('Metric Value: (UNIT)', 0, -(width / 2) + 15);
+	text('Metric Value: (' + chart.getMetric() + ')', 0, -(width / 2) + 15);
 	rotate(PI/2);
 	translate(0, 0);
 }

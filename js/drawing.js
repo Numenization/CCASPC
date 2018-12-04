@@ -1,3 +1,4 @@
+// global variables for defining how the graph looks
 var borderWidth = 3; //px
 var tickWidth = 2; // px
 var tickLength = 15; // px
@@ -6,86 +7,31 @@ var canvas = null;
 var innerGraphBuffer = 75;
 var dotSize = 4;
 
-var needsToUpdate = true;
-
-var data = [];
+// chart object
+var chart = new Chart();
 
 // p5 function: gets called on script startup
 function setup() {
+	// set up a canvas to use
 	var holder = document.getElementById('canvas-holder');
 	var info = holder.getBoundingClientRect();
 	canvas = createCanvas(info.width, info.height);
 	canvas.parent('canvas-holder');
+
+	// start drawing
 	background(240);
-	fakeData();
 	drawGraph();
 }
 
 // p5 function: gets called every frame
 function draw() {
+	// this will clear out the previously drawn image so that we dont
+	// keep drawing over the same image (looks funky)
 	background(240);
 	drawGraph();
 }
 
-function fakeData() {
-	for(var i = 0; i < 100; i++) {
-		//data.push([Math.random() * 10 + 95, i + 1]);
-		data.push([Math.sin(i / 3) * 2 + 100, i+1])
-	}
-}
-
-function addRandom() {
-	data.push([Math.random() * 10 + 95, data.length + 1]);
-}
-
-function addPoint() {
-	data.push([parseFloat(document.getElementById('val').value), data.length + 1]);
-}
-
-
-var avg = 100;
-var s = 1;
-
-function maxV(x) {
-	var r = x[0][0];
-	for(var i = 0; i < x.length; i++) {
-		if(x[i][0] > r) {
-			r = x[i][0];
-		}
-	}
-	return r;
-}
-
-function minV(x) {
-	var r = x[0][0];
-	for(var i = 0; i < x.length; i++) {
-		if(x[i][0] < r) {
-			r = x[i][0];
-		}
-	}
-	return r;
-}
-
-function maxT(x) {
-	var r = x[0][1];
-	for(var i = 0; i < x.length; i++) {
-		if(x[i][1] > r) {
-			r = x[i][1];
-		}
-	}
-	return r;
-}
-
-function minT(x) {
-	var r = x[0][1];
-	for(var i = 0; i < x.length; i++) {
-		if(x[i][1] < r) {
-			r = x[i][1];
-		}
-	}
-	return r;
-}
-
+// function that will draw a dashed line from point (x1,y1) to (x2,y2)
 function dashedLine(x1, y1, x2, y2, l, g) {
     var pc = dist(x1, y1, x2, y2) / 100;
     var pcCount = 1;
@@ -136,6 +82,7 @@ function dashedLine(x1, y1, x2, y2, l, g) {
     }
 }
 
+// main function to draw the actual graph
 function drawGraph() {
 	// border
 	stroke(0);
@@ -154,21 +101,29 @@ function drawGraph() {
 	line(innerGraphBuffer - 1, innerGraphBuffer, innerGraphBuffer - 1, height - innerGraphBuffer);
 	line(width - innerGraphBuffer / 2, innerGraphBuffer, width - innerGraphBuffer / 2, height - innerGraphBuffer);
 
+	// set up some chart data
+	var avg = chart.mean;
+	var s = chart.stdDeviation;
+	var min = chart.min;
+	var max = chart.max;
+	var minTime = chart.minTime;
+	var maxTime = chart.maxTime;
+
 	// come up with optimal bounds for y-axis
 	var yMin = 0;
 	var yMax = 0;
 
 	// upper bound
-	if(maxV(data) > avg + 3*s) {
-		yMax = maxV(data) + s;
+	if(max > avg + 3*s) {
+		yMax = max + s;
 	}
 	else {
 		yMax = avg + 4*s;
 	}
 
 	// lower bound
-	if(minV(data) < avg - 3*s) {
-		yMin = minV(data) - s;
+	if(min < avg - 3*s) {
+		yMin = min - s;
 	}
 	else {
 		yMin = avg - 4*s;
@@ -206,9 +161,9 @@ function drawGraph() {
 	var xMin = 0;
 	var xMax = 0;
 
-	if(data.length > 10) {
-		xMin = minT(data) - 1;
-		xMax = maxT(data) + 1;
+	if(chart.numberOfPoints > 10) {
+		xMin = chart.minTime - 1;
+		xMax = chart.maxTime + 1;
 	}
 	else {
 		xMin = 0;
@@ -219,9 +174,9 @@ function drawGraph() {
 	// we have to do this before drawing the points otherwise the lines will get drawn on top of the points
 	// which will not look correct
 	lastPoint = null;
-	for(var i = 0; i < data.length; i++) {
-		var x = map(data[i][1], xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
-		var y = map(data[i][0], yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
+	for(var i = 0; i < chart.numberOfPoints; i++) {
+		var x = map(chart.points[i].time, xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
+		var y = map(chart.points[i].val, yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
 
 		// draw line between points
 		if(lastPoint == null) {
@@ -238,7 +193,7 @@ function drawGraph() {
 	// plot points
 	for(var i = 0; i < data.length; i++) {
 		// tick mark and label on x axis
-		var xPos = map(data[i][1], xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
+		var xPos = map(chart.points[i].time, xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
 		if(data.length > 200) {
 			strokeWeight(tickWidth / 2);
 		}
@@ -257,28 +212,28 @@ function drawGraph() {
 		// scale the label text so that we avoid overlapping
 		// highest level of scaling works well with data sets less than 500 points
 		if(data.length < 75) {
-			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 		else if(data.length > 75 && data.length <= 105 && i%2==1) {
-			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 		else if(data.length > 105 && data.length <= 145 && i%3==2) {
-			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 		else if(data.length > 145 && data.length <= 200 && i%5==4) {
-			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 		else if(data.length > 200 && i%10==9) {
-			text(data[i][1], xPos, height - innerGraphBuffer + tickLength + 2)
+			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 
 		// plot point
 		var x = xPos;
-		var y = map(data[i][0], yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
+		var y = map(chart.points[i].val, yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
 		
 		stroke(0);
 
-		if(data[i][0] >= avg + 3 * s || data[i][0] <= avg - 3 * s) { 
+		if(chart.points[i].time >= avg + 3 * s || chart.points[i].time <= avg - 3 * s) { 
 			stroke(255, 0, 0);
 		}
 		else {

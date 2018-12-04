@@ -1,6 +1,21 @@
 // Each funtion uses three points of decimal accuracy except for the median function
 
 
+/*
+
+Nick:
+these need to be changed to work with arrays of point objects instead
+of arrays of real numbers.
+
+anywhere data[i], you need to use data[i].val
+
+there also needs to be functions for calculating the min/max time of the points
+so you would use data[i].time
+
+delete this comment when done
+
+*/
+
 function calcMean(data) {
 
   var i, mean, length = data.length; sum = 0;

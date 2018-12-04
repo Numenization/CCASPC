@@ -1,7 +1,6 @@
 // Each funtion uses three points of decimal accuracy except for the median function
-// "mean" isn't declared locally so that it can be passed to the functions for computing standard deviation and variance
 
-var mean = 0;
+
 function calcMean(data) {
 
   var i, mean, length = data.length; sum = 0;
@@ -12,15 +11,15 @@ function calcMean(data) {
   return mean.toFixed(3);
 
 }
-mean = calcMean(data);
 
-function calcStdDev(data, mean) {
+
+function calcStdDev(data) {
   var stdData = new Array;
   var i, sum = 0;
 
   for (i = 0; i < data.length; i++) {
     
-    stdData.push(Math.pow((data[i] - mean), 2));
+    stdData.push(Math.pow((data[i] - calcMean(data)), 2));
 
     sum += stdData[i];
   }
@@ -50,13 +49,13 @@ function calcMax(data){
   return m;
 }
 
-function calcVar(data, mean) {
+function calcVar(data) {
   var stdData = new Array;
   var i, sum = 0;
 
   for (i = 0; i < data.length; i++) {
     
-    stdData.push(Math.pow((data[i] - mean), 2));
+    stdData.push(Math.pow((data[i] - calcMean(data)), 2));
 
     sum += stdData[i];
   }

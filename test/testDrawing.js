@@ -9,6 +9,8 @@ var dotSize = 4;
 var needsToUpdate = true;
 
 var data = [];
+var id = null;
+var index = 0;
 
 // p5 function: gets called on script startup
 function setup() {
@@ -17,7 +19,8 @@ function setup() {
 	canvas = createCanvas(info.width, info.height);
 	canvas.parent('canvas-holder');
 	background(240);
-	fakeData();
+	//fakeData();
+	data.push([Math.sin(index / 3) * 2 + 100, ++index]);
 	drawGraph();
 }
 
@@ -25,6 +28,17 @@ function setup() {
 function draw() {
 	background(240);
 	drawGraph();
+}
+
+function stop() {
+	if(id === null)
+		return;
+	clearInterval(id);
+	id = null;
+}
+
+function start() {
+	id = window.setInterval(function() {data.push([Math.sin(index / 3) * 2 + 100, ++index]);}, 100);
 }
 
 function fakeData() {

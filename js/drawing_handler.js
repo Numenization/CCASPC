@@ -83,8 +83,13 @@ function drawGraph() {
 	line(width - borderAdjustment, 0, width - borderAdjustment, height);
 
 	// check if we have valid data, if we don't the program will hang
-	if(chart.numberOfPoints < 3)
+	if(chart.numberOfPoints < 3) {
+		stroke(0);
+		strokeWeight(0);
+		textAlign(CENTER, CENTER);
+		text('Please enter at least 3 points of data.', width / 2, height / 2);
 		return;
+	}
 
 	// inner graph border
 	line(innerGraphBuffer, innerGraphBuffer, width - innerGraphBuffer / 2, innerGraphBuffer);
@@ -104,21 +109,29 @@ function drawGraph() {
 	var yMin = 0;
 	var yMax = 0;
 
-	// upper bound
-	if(max > avg + 3*s) {
-		yMax = max + s;
+	if(s !== 0) {
+		// upper bound
+		if(max > avg + 3*s) {
+			yMax = max + s;
+		}
+		else {
+			yMax = avg + 4*s;
+		}
+
+		// lower bound
+		if(min < avg - 3*s) {
+			yMin = min - s;
+		}
+		else {
+			yMin = avg - 4*s;
+		}
 	}
 	else {
-		yMax = avg + 4*s;
+		// sigma is 0, so we can't use it in calculations
+		yMin = avg- avg / 10;
+		yMax = avg + avg / 10;
 	}
 
-	// lower bound
-	if(min < avg - 3*s) {
-		yMin = min - s;
-	}
-	else {
-		yMin = avg - 4*s;
-	}
 
 	textAlign(RIGHT,CENTER);
 	// y axis ticks with labels (label mean, UCL, LCL)
@@ -129,23 +142,26 @@ function drawGraph() {
 	strokeWeight(0);
 	text(avg.toFixed(1), innerGraphBuffer - tickLength, yPos);
 
-	// UCL tick
-	yPos = map(avg + 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
-	strokeWeight(tickWidth);
-	line(innerGraphBuffer - tickLength / 2, yPos, innerGraphBuffer + tickLength / 2, yPos);
-	strokeWeight(tickWidth / 2);
-	dashedLine(innerGraphBuffer + tickLength / 2 + 5, yPos, width - innerGraphBuffer / 2, yPos, 5, 5);
-	strokeWeight(0);
-	text((avg + 3*s).toFixed(1), innerGraphBuffer - tickLength, yPos);
+	// if sigma is 0, we don't need upper/lower control lines
+	if(s !== 0) {
+		// UCL tick
+		yPos = map(avg + 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
+		strokeWeight(tickWidth);
+		line(innerGraphBuffer - tickLength / 2, yPos, innerGraphBuffer + tickLength / 2, yPos);
+		strokeWeight(tickWidth / 2);
+		dashedLine(innerGraphBuffer + tickLength / 2 + 5, yPos, width - innerGraphBuffer / 2, yPos, 5, 5);
+		strokeWeight(0);
+		text((avg + 3*s).toFixed(1), innerGraphBuffer - tickLength, yPos);
 
-	// LCL tick
-	yPos = map(avg - 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
-	strokeWeight(tickWidth);
-	line(innerGraphBuffer - tickLength / 2, yPos, innerGraphBuffer + tickLength / 2, yPos);
-	strokeWeight(tickWidth / 2);
-	dashedLine(innerGraphBuffer + tickLength / 2 + 5, yPos, width - innerGraphBuffer / 2, yPos, 5, 5);
-	strokeWeight(0);
-	text((avg - 3*s).toFixed(1), innerGraphBuffer - tickLength, yPos);
+		// LCL tick
+		yPos = map(avg - 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
+		strokeWeight(tickWidth);
+		line(innerGraphBuffer - tickLength / 2, yPos, innerGraphBuffer + tickLength / 2, yPos);
+		strokeWeight(tickWidth / 2);
+		dashedLine(innerGraphBuffer + tickLength / 2 + 5, yPos, width - innerGraphBuffer / 2, yPos, 5, 5);
+		strokeWeight(0);
+		text((avg - 3*s).toFixed(1), innerGraphBuffer - tickLength, yPos);
+	}
 
 	// get bounds for x axis
 	var xMin = 0;
@@ -223,7 +239,7 @@ function drawGraph() {
 		
 		stroke(0);
 
-		if(chart.points[i].y >= avg + 3 * s || chart.points[i].y <= avg - 3 * s) { 
+		if((chart.points[i].y >= avg + 3 * s || chart.points[i].y <= avg - 3 * s) && s !== 0) { 
 			stroke(255, 0, 0);
 		}
 		else {

@@ -82,16 +82,15 @@ function drawGraph() {
 	line(borderAdjustment - 1, 0, borderAdjustment - 1, height);
 	line(width - borderAdjustment, 0, width - borderAdjustment, height);
 
+	// check if we have valid data, if we don't the program will hang
+	if(chart.numberOfPoints < 3)
+		return;
 
 	// inner graph border
 	line(innerGraphBuffer, innerGraphBuffer, width - innerGraphBuffer / 2, innerGraphBuffer);
 	line(innerGraphBuffer, height - innerGraphBuffer, width - innerGraphBuffer / 2, height - innerGraphBuffer);
 	line(innerGraphBuffer - 1, innerGraphBuffer, innerGraphBuffer - 1, height - innerGraphBuffer);
 	line(width - innerGraphBuffer / 2, innerGraphBuffer, width - innerGraphBuffer / 2, height - innerGraphBuffer);
-
-	// check if we have valid data, if we don't the program will hang
-	if(chart.numberOfPoints < 3)
-		return;
 
 	// set up some chart data
 	var avg = chart.mean;
@@ -205,16 +204,16 @@ function drawGraph() {
 		if(chart.numberOfPoints < 75) {
 			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(chart.numberOfPoints > 75 && chart.numberOfPoints <= 105 && i%2==1) {
+		else if(chart.numberOfPoints > 75 && chart.numberOfPoints <= 105 && chart.points[i].x%2==1) {
 			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(chart.numberOfPoints > 105 && chart.numberOfPoints <= 145 && i%3==2) {
+		else if(chart.numberOfPoints > 105 && chart.numberOfPoints <= 145 && chart.points[i].x%3==0) {
 			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(chart.numberOfPoints > 145 && chart.numberOfPoints <= 200 && i%5==4) {
+		else if(chart.numberOfPoints > 145 && chart.numberOfPoints <= 200 && chart.points[i].x%5==0) {
 			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(chart.numberOfPoints > 200 && i%10==9) {
+		else if(chart.numberOfPoints > 200 && chart.points[i].x%10==0) {
 			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 

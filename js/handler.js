@@ -23,6 +23,13 @@ function addRandom() {
 	chart.addPoint(new Point(index, val));
 }
 
+function addPoint() {
+	var index = chart.numberOfPoints + 1;
+	var val = parseFloat(document.getElementById('val').value);
+	console.log([index, val]);
+	chart.addPoint(new Point(index, val));
+}
+
 var interval = null;
 function start() {
 	if(interval !== null)

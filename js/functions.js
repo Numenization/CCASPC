@@ -1,40 +1,35 @@
 // Each funtion uses three points of decimal accuracy except for the median function
+var data = [{x:45,y:32},{x:1,y:3},{x:12,y:43},{x:4,y:23},{x:21,y:23},{x:12,y:5}]
 
-
-/*
-
-Nick:
-these need to be changed to work with arrays of point objects instead
-of arrays of real numbers.
-
-anywhere data[i], you need to use data[i].val
-
-there also needs to be functions for calculating the min/max time of the points
-so you would use data[i].time
-
-delete this comment when done
-
-*/
-
-function calcMean(data) {
+function calcTimeMean(data) {
 
   var i, mean, length = data.length; sum = 0;
   for (i = 0; i < data.length; i++) {
-    sum += data[i];
+    sum += data[i].x;
   }
   mean = sum / length;
   return mean.toFixed(3);
 
 }
 
+function calcMetricMean(data) {
 
-function calcStdDev(data) {
+  var i, mean, length = data.length; sum = 0;
+  for (i = 0; i < data.length; i++) {
+    sum += data[i].y;
+  }
+  mean = sum / length;
+  return mean.toFixed(3);
+
+}
+
+function calcTimeStdDev(data) {
   var stdData = new Array;
   var i, sum = 0;
 
   for (i = 0; i < data.length; i++) {
     
-    stdData.push(Math.pow((data[i] - calcMean(data)), 2));
+    stdData.push(Math.pow((data[i].x - calcTimeMean(data)), 2));
 
     sum += stdData[i];
   }
@@ -42,35 +37,70 @@ function calcStdDev(data) {
   return sum.toFixed(3);
 }
 
-function calcMin(data){
-  var m = data[0];
-  var i;
-  for ( i = 0; i < data.length; i++ ){
-    if (data[i] < m){
-      m = data[i];
-    }
-  }
-  return m;
-}
-
-function calcMax(data){
-   var m = data[0];
-  var i;
-  for ( i = 0; i < data.length; i++ ){
-    if (data[i] > m){
-      m = data[i];
-    }
-  }
-  return m;
-}
-
-function calcVar(data) {
+function calcMetricStdDev(data) {
   var stdData = new Array;
   var i, sum = 0;
 
   for (i = 0; i < data.length; i++) {
     
-    stdData.push(Math.pow((data[i] - calcMean(data)), 2));
+    stdData.push(Math.pow((data[i].y - calcMetricMean(data)), 2));
+
+    sum += stdData[i];
+  }
+  sum /= stdData.length;
+  return sum.toFixed(3);
+}
+function calcTimeMin(data){
+  var m = data[0].x;
+  var i;
+  for ( i = 0; i < data.length; i++ ){
+    if (data[i].x < m){
+      m = data[i].x;
+    }
+  }
+  return m;
+}
+
+function calcTimeMax(data){
+   var m = data[0].x;
+  var i;
+  for ( i = 0; i < data.length; i++ ){
+    if (data[i].x > m){
+      m = data[i].x;
+    }
+  }
+  return m;
+}
+
+function calcMetricMin(data){
+  var m = data[0].y;
+  var i;
+  for ( i = 0; i < data.length; i++ ){
+    if (data[i].y < m){
+      m = data[i].y;
+    }
+  }
+  return m;
+}
+
+function calcMetricMax(data){
+   var m = data[0].y;
+  var i;
+  for ( i = 0; i < data.length; i++ ){
+    if (data[i].y > m){
+      m = data[i].y;
+    }
+  }
+  return m;
+}
+
+function calcTimeVar(data) {
+  var stdData = new Array;
+  var i, sum = 0;
+
+  for (i = 0; i < data.length; i++) {
+    
+    stdData.push(Math.pow((data[i].x - calcTimeMean(data)), 2));
 
     sum += stdData[i];
   }
@@ -79,14 +109,39 @@ function calcVar(data) {
   return (Math.sqrt(sum)).toFixed(3);
 }
 
-function calcMed(data){
+function calcMetricVar(data) {
+  var stdData = new Array;
+  var i, sum = 0;
+
+  for (i = 0; i < data.length; i++) {
+    
+    stdData.push(Math.pow((data[i].y - calcMetricMean(data)), 2));
+
+    sum += stdData[i];
+  }
+  sum /= stdData.length;
+  
+  return (Math.sqrt(sum)).toFixed(3);
+}
+function calcTimeMed(data){
     data.sort( function(a,b) {return a - b;} );
 
-    var half = Math.floor(data.length/2);
+    var half = data.length/2;
+
+    if(data.length % 2)
+        return data[half].x;
+    else
+        
+    return ((data[half-1].x + data[half].x) / 2.0).toFixed(2);
+}
+function calcMetricMed(data){
+    data.sort( function(a,b) {return a - b;} );
+
+    var half = data.length/2;
 
     if(data.length % 2)
         return data[half];
     else
-        
-    return (data[half-1] + data[half]) / 2.0;
+
+    return ((data[half-1].y + data[half].y) / 2.0).toFixed(2);
 }

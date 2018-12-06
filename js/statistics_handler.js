@@ -8,7 +8,7 @@ function calcTimeMean(data) {
     sum += data[i].x;
   }
   mean = sum / length;
-  return mean.toFixed(3);
+  return mean;
 
 }
 
@@ -19,11 +19,11 @@ function calcMetricMean(data) {
     sum += data[i].y;
   }
   mean = sum / length;
-  return mean.toFixed(3);
+  return mean;
 
 }
 
-function calcTimeStdDev(data) {
+function calcTimeVar(data) {
   var stdData = new Array;
   var i, sum = 0;
 
@@ -34,10 +34,10 @@ function calcTimeStdDev(data) {
     sum += stdData[i];
   }
   sum /= stdData.length;
-  return sum.toFixed(3);
+  return sum;
 }
 
-function calcMetricStdDev(data) {
+function calcMetricVar(data) {
   var stdData = new Array;
   var i, sum = 0;
 
@@ -48,7 +48,7 @@ function calcMetricStdDev(data) {
     sum += stdData[i];
   }
   sum /= stdData.length;
-  return sum.toFixed(3);
+  return sum;
 }
 function calcTimeMin(data){
   var m = data[0].x;
@@ -94,7 +94,7 @@ function calcMetricMax(data){
   return m;
 }
 
-function calcTimeVar(data) {
+function calcTimeStdDev(data) {
   var stdData = new Array;
   var i, sum = 0;
 
@@ -106,10 +106,10 @@ function calcTimeVar(data) {
   }
   sum /= stdData.length;
   
-  return (Math.sqrt(sum)).toFixed(3);
+  return (Math.sqrt(sum));
 }
 
-function calcMetricVar(data) {
+function calcMetricStdDev2(data) {
   var stdData = new Array;
   var i, sum = 0;
 
@@ -121,8 +121,13 @@ function calcMetricVar(data) {
   }
   sum /= stdData.length;
   
-  return (Math.sqrt(sum)).toFixed(3);
+  return (Math.sqrt(sum));
 }
+
+function calcMetricStdDev(data) {
+  return Math.sqrt(calcMetricVar(data));
+}
+
 function calcTimeMed(data){
     data.sort( function(a,b) {return a - b;} );
 
@@ -132,7 +137,7 @@ function calcTimeMed(data){
         return data[half].x;
     else
         
-    return ((data[half-1].x + data[half].x) / 2.0).toFixed(2);
+    return ((data[half-1].x + data[half].x) / 2.0);
 }
 function calcMetricMed(data){
     data.sort( function(a,b) {return a - b;} );
@@ -143,5 +148,5 @@ function calcMetricMed(data){
         return data[half];
     else
 
-    return ((data[half-1].y + data[half].y) / 2.0).toFixed(2);
+    return ((data[half-1].y + data[half].y) / 2.0);
 }

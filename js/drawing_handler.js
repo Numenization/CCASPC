@@ -1,15 +1,3 @@
-// global variables for defining how the graph looks
-var borderWidth = 3; //px
-var tickWidth = 2; // px
-var tickLength = 15; // px
-var strokeColor = '#000000'
-var canvas = null;
-var innerGraphBuffer = 75;
-var dotSize = 4;
-
-// chart object
-var chart = new Chart();
-
 // p5 function: gets called on script startup
 function setup() {
 	// set up a canvas to use
@@ -105,8 +93,6 @@ function drawGraph() {
 	if(chart.numberOfPoints < 3)
 		return;
 
-	console.log('got to data set up');
-
 	// set up some chart data
 	var avg = chart.mean;
 	var s = chart.stdDeviation;
@@ -114,8 +100,6 @@ function drawGraph() {
 	var max = chart.max;
 	var minTime = chart.minTime;
 	var maxTime = chart.maxTime;
-
-	console.log('got passed data set up');
 
 	// come up with optimal bounds for y-axis
 	var yMin = 0;
@@ -137,10 +121,6 @@ function drawGraph() {
 		yMin = avg - 4*s;
 	}
 
-
-
-	console.log('set up y axis bounds');
-
 	textAlign(RIGHT,CENTER);
 	// y axis ticks with labels (label mean, UCL, LCL)
 	// mean tick
@@ -148,21 +128,16 @@ function drawGraph() {
 	strokeWeight(tickWidth);
 	line(innerGraphBuffer - tickLength / 2, yPos, width - innerGraphBuffer / 2, yPos);
 	strokeWeight(0);
-	text(avg, innerGraphBuffer - tickLength, yPos);
+	text(avg.toFixed(1), innerGraphBuffer - tickLength, yPos);
 
 	// UCL tick
 	yPos = map(avg + 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
-	console.log('got y pos')
 	strokeWeight(tickWidth);
 	line(innerGraphBuffer - tickLength / 2, yPos, innerGraphBuffer + tickLength / 2, yPos);
-	console.log('drew tick')
 	strokeWeight(tickWidth / 2);
 	dashedLine(innerGraphBuffer + tickLength / 2 + 5, yPos, width - innerGraphBuffer / 2, yPos, 5, 5);
-	console.log('drew dashed line')
 	strokeWeight(0);
-	text(avg + 3*s, innerGraphBuffer - tickLength, yPos);
-
-	console.log('drew ucl line')
+	text((avg + 3*s).toFixed(1), innerGraphBuffer - tickLength, yPos);
 
 	// LCL tick
 	yPos = map(avg - 3*s, yMin, yMax, height - innerGraphBuffer, innerGraphBuffer);
@@ -171,9 +146,7 @@ function drawGraph() {
 	strokeWeight(tickWidth / 2);
 	dashedLine(innerGraphBuffer + tickLength / 2 + 5, yPos, width - innerGraphBuffer / 2, yPos, 5, 5);
 	strokeWeight(0);
-	text(avg - 3*s, innerGraphBuffer - tickLength, yPos);
-
-	console.log('got to setting up bounds');
+	text((avg - 3*s).toFixed(1), innerGraphBuffer - tickLength, yPos);
 
 	// get bounds for x axis
 	var xMin = 0;
@@ -193,8 +166,8 @@ function drawGraph() {
 	// which will not look correct
 	lastPoint = null;
 	for(var i = 0; i < chart.numberOfPoints; i++) {
-		var x = map(chart.points[i].time, xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
-		var y = map(chart.points[i].val, yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
+		var x = map(chart.points[i].x, xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
+		var y = map(chart.points[i].y, yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
 
 		// draw line between points
 		if(lastPoint == null) {
@@ -209,10 +182,10 @@ function drawGraph() {
 
 	textAlign(CENTER, CENTER);
 	// plot points
-	for(var i = 0; i < data.length; i++) {
+	for(var i = 0; i < chart.numberOfPoints; i++) {
 		// tick mark and label on x axis
-		var xPos = map(chart.points[i].time, xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
-		if(data.length > 200) {
+		var xPos = map(chart.points[i].x, xMin, xMax, innerGraphBuffer, width - innerGraphBuffer / 2);
+		if(chart.numberOfPoints > 200) {
 			strokeWeight(tickWidth / 2);
 		}
 		else {
@@ -220,38 +193,38 @@ function drawGraph() {
 		}
 		line(xPos, height - innerGraphBuffer + tickLength / 2, xPos, height - innerGraphBuffer - tickLength / 2);
 		strokeWeight(0);
-		if(data.length > 40){
+		if(chart.numberOfPoints > 40){
 			textSize(8);
 		}
 		else {
 			textSize(12);
 		}
 
-		// scale the label text so that we avoid overlapping
+		// scale the label text so that we avoid overlapping text
 		// highest level of scaling works well with data sets less than 500 points
-		if(data.length < 75) {
-			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
+		if(chart.numberOfPoints < 75) {
+			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(data.length > 75 && data.length <= 105 && i%2==1) {
-			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
+		else if(chart.numberOfPoints > 75 && chart.numberOfPoints <= 105 && i%2==1) {
+			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(data.length > 105 && data.length <= 145 && i%3==2) {
-			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
+		else if(chart.numberOfPoints > 105 && chart.numberOfPoints <= 145 && i%3==2) {
+			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(data.length > 145 && data.length <= 200 && i%5==4) {
-			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
+		else if(chart.numberOfPoints > 145 && chart.numberOfPoints <= 200 && i%5==4) {
+			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
-		else if(data.length > 200 && i%10==9) {
-			text(chart.points[i].time, xPos, height - innerGraphBuffer + tickLength + 2)
+		else if(chart.numberOfPoints > 200 && i%10==9) {
+			text(chart.points[i].x, xPos, height - innerGraphBuffer + tickLength + 2)
 		}
 
 		// plot point
 		var x = xPos;
-		var y = map(chart.points[i].val, yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
+		var y = map(chart.points[i].y, yMax, yMin, innerGraphBuffer, height - innerGraphBuffer);
 		
 		stroke(0);
 
-		if(chart.points[i].time >= avg + 3 * s || chart.points[i].time <= avg - 3 * s) { 
+		if(chart.points[i].y >= avg + 3 * s || chart.points[i].y <= avg - 3 * s) { 
 			stroke(255, 0, 0);
 		}
 		else {

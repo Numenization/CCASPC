@@ -27,6 +27,8 @@ function setup() {
 // p5 function: gets called every frame
 function draw() {
 	background(240);
+	if(data.length ===0)
+		return;
 	drawGraph();
 }
 
@@ -37,8 +39,14 @@ function stop() {
 	id = null;
 }
 
+var delay = 100;
+
 function start() {
-	id = window.setInterval(function() {data.push([Math.sin(index / 3) * 2 + 100, ++index]);}, 100);
+	id = window.setInterval(function() {data.push([Math.sin(index / 3) * 2 + 100, ++index]);}, delay);
+}
+
+function clean() {
+	data = [];
 }
 
 function fakeData() {

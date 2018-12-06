@@ -16,20 +16,29 @@ function Chart(metric=0, time=0) {
 
 Chart.prototype.update = function () {
 	this.numberOfPoints = this.points.length;
-	this.mean = calcMean(this.points);
-	this.median = calcMed(this.points);
-	this.max = calcMax(this.points);
-	this.min = calcMin(this.points);
-	this.maxTime = calcMaxTime(this.points);
-	this.minTime = calcMinTime(this.points);
-	this.variance = calcVar(this.points);
-	this.stdDeviation = calcStdDev(this.points);
+	this.mean = calcMetricMean(this.points);
+	this.median = calcMetricMed(this.points);
+	this.max = calcMetricMax(this.points);
+	this.min = calcMetricMin(this.points);
+	this.maxTime = calcTimeMax(this.points);
+	this.minTime = calcTimeMin(this.points);
+	this.variance = calcMetricVar(this.points);
+	this.stdDeviation = calcMetricStdDev(this.points);
 }
 
 Chart.prototype.addPoint = function(point) {
 	if(!(point instanceof Point))
 		return;
 	this.points.push(point);
+	// for some reason at this point it seems like the points get put into random positions in the array??
+	// so we have to sort it using a helper function
+	this.points.sort(function(a,b) {
+		if(a.x > b.x)
+			return 1;
+		if(a.x < b.x)
+			return -1;
+		return 0;
+	});
 	this.update();
 }
 
@@ -55,15 +64,15 @@ Chart.prototype.getTime = function() {
 }
 
 // point class definition
-function Point(x=0,y=0) {
-	this.time = x;
-	this.val = y;
+function Point(time=0,val=0) {
+	this.x = time;
+	this.y = val;
 }
 
-Point.prototype.setValue = function (y) {
-	this.val = y;
+Point.prototype.setValue = function (val) {
+	this.y = val;
 }
 
-Point.prototype.setTime = function(x) {
-	this.time = x;
+Point.prototype.setTime = function(time) {
+	this.x = time;
 }

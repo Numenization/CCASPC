@@ -40,3 +40,53 @@ function start() {
 function stop() {
 	clearInterval(interval);
 }
+
+// other functions
+
+// function to download text data to a file
+// this WILL NOT work on older versions of browsers.
+// this is only designed to work on modern versions of:
+// Edge, Firefox, Chrome
+
+// sample call: download('string data', 'filename.txt', 'text/plain')
+function download(stringData, fileName, fileType) {
+	var downloadObject = document.createElement('a');
+	downloadObject.href = "data:" + fileType + "charset=utf-8," + encodeURIComponent(stringData);
+	downloadObject.setAttribute('download', fileName);
+	document.body.appendChild(downloadObject);
+
+	// try downloading by forcing a mouse click event
+	setTimeout(function() {
+		var event = document.createEvent("MouseEvents");
+		event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null); // wowee
+		downloadObject.dispatchEvent(event);
+		document.body.removeChild(downloadObject);
+	}, 15);
+}
+
+// Save Button event listener
+document.getElementById("save-button0").addEventListener("click", function() {
+	if(!(chart !== null && chart instanceof Chart))
+		return;
+	var stringData = JSON.stringify(chart);
+	download(stringData, "ccaspc_data.chart", 'text/plain');
+});
+
+// Load Button event listener
+document.getElementById("load-button0").addEventListener("click", function() {
+	document.getElementById('file-input').click();
+});
+
+document.getElementById('file-input').onchange = function() {
+	var reader = new FileReader();
+	reader.readAsText(document.getElementById('file-input').files[0]);
+	reader.onload = function() {
+		var stringData = reader.result;
+		if(stringData !== null) {
+			console.log("trying to parse: " + stringData);
+			var obj = JSON.parse(stringData);
+			console.log("got data: " + obj);
+			chart = Object.assign(new Chart, obj);
+		}
+	}
+}

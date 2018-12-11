@@ -41,7 +41,7 @@ function stop() {
 	clearInterval(interval);
 }
 
-// other functions
+// file IO functions
 
 // function to download text data to a file
 // this WILL NOT work on older versions of browsers.

@@ -54,14 +54,9 @@ function download(stringData, fileName, fileType) {
 	downloadObject.href = "data:" + fileType + "charset=utf-8," + encodeURIComponent(stringData);
 	downloadObject.setAttribute('download', fileName);
 	document.body.appendChild(downloadObject);
-
 	// try downloading by forcing a mouse click event
-	setTimeout(function() {
-		var event = document.createEvent("MouseEvents");
-		event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null); // wowee
-		downloadObject.dispatchEvent(event);
-		document.body.removeChild(downloadObject);
-	}, 15);
+	downloadObject.click();
+	document.body.removeChild(downloadObject);
 }
 
 // Save Button event listener
@@ -83,9 +78,7 @@ document.getElementById('file-input').onchange = function() {
 	reader.onload = function() {
 		var stringData = reader.result;
 		if(stringData !== null) {
-			console.log("trying to parse: " + stringData);
 			var obj = JSON.parse(stringData);
-			console.log("got data: " + obj);
 			chart = Object.assign(new Chart, obj);
 		}
 	}

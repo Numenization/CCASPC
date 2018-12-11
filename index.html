@@ -3,23 +3,30 @@
   
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
   <title>index</title>
-
-  
   
   <style type="text/css">
-.auto-style1 {
-	text-align: right;
+  .relative {
+	position: relative;
 }
-</style>
-</head><body style="height: 571px">
+  .absolute {
+	position: absolute;
+	width: auto;
+	height: auto;
+  }  
+  .auto-style1 {
+	  font-size: x-large;
+  }
+  </style>
+  
+</head><body style="height: 768px; width: 1461px;">
 <script src="js/p5.js"></script>
 <script src="js/data.js"></script>
 <script src="js/handler.js"></script>
 <script src="js/statistics_handler.js"></script>
 <script src="js/drawing_handler.js"></script>
-<h1 style="text-align: center;">Control Graph</h1>
-<div id="canvas-holder" style="width: 1280px; height: 720px">
-	<div style="text-align: right; width: 1600px;">
+<h1 style="text-align: center; width: 1112px; left: 10px; top: -9px;" class="relative">Control Graph</h1>
+<div class="absolute" id="canvas-holder" style="width: 1122px; height: 605px; left: 16px; top: 59px; right: 322px;"></div>
+<div style="text-align: right; width: 295px; left: 1140px; top: -39px;" class="relative">
 		<span style="font-weight: bold;">
 		Time Interval:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <select name="time_interval_list" id="time-interval-drop">
@@ -40,18 +47,19 @@ Inital Three Values:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
 		<input name="second_point" value="Second point..." id="first-point-text0" size="15"><br>
 		<input id="third point text" name="third_point" value="Third point..." size="15"><br>
 <br>
-</span><button type="submit" id="submit-one">Submit</button><br>
-		<div style="text-align: center;">
-			<h2 class="auto-style1">Mean:
-			<input size="5" readonly="readonly" name="graph_mean" align="middle" id="mean-output"><br>Median:
-			<input readonly="readonly" size="5" name="graph_median" id="median-output"><br>Deviation:
-			<input readonly="readonly" size="5" name="graph_dev" align="middle" id="deviation-output"><br>Min:
-			<input readonly="readonly" size="5" name="graph_min" align="middle" id="min-output"><br>Max:&nbsp;<input readonly="readonly" size="5" name="graph_max" id="max-output"><br>
+</span><button type="submit" id="submit-one">Submit</button><br><br><br><br><br>
+		<br><br><br><br><strong><span class="auto-style1">Mean:
+		<input id="graph-mean" name="graph_mean" readonly="readonly" size="5" type="text"><br>
+		Median:
+		<input id="graph-median" name="graph_median" readonly="readonly" size="5" type="text"><br>
+		Deviation:
+		<input id="graph-deviation" name="graph_deviation" readonly="readonly" size="5" type="text"><br>
+		Max:
+		<input id="graph_max" name="graph_max" readonly="readonly" size="5" type="text"><br>
+		Min:
+		<input id="graph-min" name="graph_min" readonly="readonly" size="5" type="text"></span></strong><br>
 <button type="submit" id="save-button0">Save to File...</button>
 &nbsp;
 <button type="submit" id="load-button0">Load from File...</button>
-</h2>
-		</div>
 	</div>
-</div>
 </body></html>

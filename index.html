@@ -1,66 +1,96 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html><head>
+<html>
+<head>
   
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-  <title>index</title>
-  
-  <style type="text/css">
-  .relative {
-	position: relative;
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+<title>Control Charts Assistance</title>
+
+<style type="text/css">
+	.relative-shown{
+		position: relative;
+		visibility: visible;
 }
-  .absolute {
-	position: absolute;
-	width: auto;
-	height: auto;
+
+	.relative-hidden{
+		position: relative;
+		visibility: hidden;
+}
+
+	.absolute{
+		position: absolute;
 }  
-  .auto-style1 {
-	  font-size: x-large;
+
+	.hide-button{
+		visibility: hidden;
 }
-  </style>
-  
-</head><body style="height: 768px; width: 1461px;">
+</style>
+
+</head>
+
+
+<body style="height: 768px; width: 1463px; left: 0px; top: 0px;">
+
 <h1 style="text-align: center; width: 1112px; left: 10px; top: 25px;" class="relative">Control Graph</h1>
-<div class="absolute" id="canvas-holder" style="width: 1122px; height: 605px; left: 15px; top: 87px; right: 323px;"></div>
-<div style="text-align: right; width: 295px; left: 1141px; top: 38px; height: 561px;" class="relative">
-		<span style="font-weight: bold;">
-		Time Interval:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<select name="time_interval_list" id="time-interval-drop">
-<option value="days" selected="">Default</option>
-<option value="days">Days</option>
-<option value="weeks">Weeks</option>
-<option value="months">Months</option>
-</select><br>
-<br>
-		Work Metric:&nbsp;<select name="work_metric_list" id="work-metric-drop">
-<option value="loc" selected="">Default</option>
-<option value="loc">Lines of Code</option>
-<option value="fp">Function Points</option>
-</select><br>
-<br>
-Inital Three Values:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-		<input name="first_point" value="First point..." id="first-point-text" size="15"><span style="font-weight: bold; font-size: 12px;"><br>
-		<input name="second_point" value="Second point..." id="first-point-text0" size="15"><br>
-		<input id="third point text" name="third_point" value="Third point..." size="15"><br>
-<br>
-</span><button type="submit" id="submit-one">Submit</button><br><br><br><br><br>
-		<br><br><br><br><strong><span class="auto-style1">Mean:
-		<input id="graph-mean" name="graph_mean" readonly="readonly" size="5" type="text"><br>
+
+<div class="absolute" id="canvas-holder" style="width: 1122px; height: 605px; left: 15px; top: 87px; right: 323px;">
+</div>
+
+<div style="text-align: right; width: 295px; left: 1141px; top: 98px; height: 454px;" class="relative-shown">
+	<strong>Time Interval:</strong><br>
+		<select name="time_interval_list" id="time-interval-drop">
+			<option value="days" selected="">Days</option>
+			<option value="weeks">Weeks</option>
+			<option value="months">Months</option>
+		</select>
+	<br>
+	<br>
+	
+	<strong>Work Metric:<br></strong>
+		<select name="work_metric_list" id="work-metric-drop">
+			<option value="loc" selected="">Lines of Code</option>
+			<option value="fp">Function Points</option>
+					</select><br><br>
+					
+<div class="relative-shown">
+	<strong>Initial Three Values:</strong><br>
+		<input name="first_point" id="first-point-text" size="15"><span style="font-weight: bold; font-size: 12px;"><br>
+		<input name="second_point" id="second-point-text" size="15" type="text"><br>
+		<input id="third-point-text" name="third_point" size="15" type="text"><br>
+		<button type="submit" id="submit-initial" style="width: 125px">Add initial points...</button>
+	</span>
+</div>
+
+	<br>
+	
+<div class="relative-hidden" style="width: 295px; height: 67px; position: absolute; top: 120px; left: 0px" visible="false">
+	<strong>Add a point</strong><span style="font-weight: bold;">:<br> </span>
+		<input name="add_point" id="add-point-text" size="15" type="text"><br>
+			<span style="font-weight: bold; font-size: 12px;">
+			<span style="font-weight: bold;">
+				<button type="submit" id="submit-add" style="width: 125px">Add a point...</button>
+	</span>
+	</span>
+</div>
+
+	<br>
+		
+	<strong>
+		Mean:
+			<input id="graph-mean" name="graph_mean" readonly="readonly" size="5" type="text"><br>
 		Median:
-		<input id="graph-median" name="graph_median" readonly="readonly" size="5" type="text"><br>
+			<input id="graph-median" name="graph_median" readonly="readonly" size="5" type="text"><br>
 		Deviation:
-		<input id="graph-deviation" name="graph_deviation" readonly="readonly" size="5" type="text"><br>
+			<input id="graph-deviation" name="graph_deviation" readonly="readonly" size="5" type="text"><br>
 		Max:
-		<input id="graph_max" name="graph_max" readonly="readonly" size="5" type="text"><br>
+			<input id="graph_max" name="graph_max" readonly="readonly" size="5" type="text"><br>
 		Min:
-		<input id="graph-min" name="graph_min" readonly="readonly" size="5" type="text"><br></span></strong><br>
-<button type="submit" id="save-button0">Save to File...</button>
-&nbsp;
-<button type="submit" id="load-button0">Load from File...</button>
-<input id="file-input" file_extension=".chart" type="file" style="display: none;" />
-<script src="js/p5.js"></script>
-<script src="js/data.js"></script>
-<script src="js/handler.js"></script>
-<script src="js/statistics_handler.js"></script>
-<script src="js/drawing_handler.js"></script>
-	</div>
-</body></html>
+			<input id="graph-min" name="graph_min" readonly="readonly" size="5" type="text"><br>
+		<br>
+	</strong>
+	<button type="submit" id="save-button0" style="width: 125px">Save to File...</button>
+	&nbsp;
+	<button type="submit" id="load-button0" style="width: 125px">Load from File...</button>
+</div>
+
+</body>
+</html>

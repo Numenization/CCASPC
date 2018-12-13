@@ -30,11 +30,12 @@ function addPoint() {
 	chart.addPoint(new Point(index, val));
 }
 
+var delay = 250;
 var interval = null;
 function start() {
 	if(interval !== null)
 		stop();
-	interval = window.setInterval(function() {addRandom();}, 250);
+	interval = window.setInterval(function() {addRandom();}, delay);
 }
 
 function stop() {

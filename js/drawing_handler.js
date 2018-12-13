@@ -13,6 +13,10 @@ function setup() {
 
 // p5 function: gets called every frame
 function draw() {
+	// optimization to not go through all of these calculations if we do not need to
+	if(needsToUpdate === null || needsToUpdate === false)
+		return;
+	needsToUpdate = false;
 	// this will clear out the previously drawn image so that we dont
 	// keep drawing over the same image (looks funky)
 	background(240);
@@ -69,7 +73,7 @@ function dashedLine(x1, y1, x2, y2, l, g) {
         currentPos = currentPos + lPercent + gPercent;
     }
 }
-
+var counter = 0;
 // main function to draw the actual graph
 function drawGraph() {
 	// border

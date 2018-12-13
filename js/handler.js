@@ -14,6 +14,7 @@ var dotSize = 4;
 
 // chart object
 var chart = new Chart();
+var needsToUpdate = false;
 
 // test functions
 function addRandom() {
@@ -28,6 +29,7 @@ function addPoint() {
 	var val = parseFloat(document.getElementById('val').value);
 	console.log([index, val]);
 	chart.addPoint(new Point(index, val));
+	needsToUpdate = true;
 }
 
 var delay = 250;
@@ -81,6 +83,7 @@ document.getElementById('file-input').onchange = function() {
 		if(stringData !== null) {
 			var obj = JSON.parse(stringData);
 			chart = Object.assign(new Chart, obj);
+			needsToUpdate = true;
 		}
 	}
 }

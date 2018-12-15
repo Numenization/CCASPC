@@ -24,6 +24,7 @@ Chart.prototype.update = function () {
 	this.minTime = calcTimeMin(this.points);
 	this.variance = calcMetricVar(this.points);
 	this.stdDeviation = calcMetricStdDev(this.points);
+	needsToUpdate = true;
 }
 
 Chart.prototype.addPoint = function(point) {

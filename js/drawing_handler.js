@@ -1,3 +1,15 @@
+/* 
+
+drawing handler for CCASPC
+defines how the chart is drawn on the webpage
+
+author: Nicholas Spencer
+
+Professor: Bruce Maxim
+Course: CIS 375.001, Software Engineering
+
+*/
+
 // p5 function: gets called on script startup
 function setup() {
 	// set up a canvas to use

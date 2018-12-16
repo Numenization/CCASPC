@@ -6,7 +6,7 @@ stores global variables and links up UI to functionality
 co-authors: Selawai Mona
 			Nicholas Spencer
 
-Professor: Burce Maxim
+Professor: Bruce Maxim
 Course: CIS 375.001, Software Engineering
 
 */
@@ -39,7 +39,7 @@ function addPoint() {
 	var val = parseFloat(document.getElementById('val').value);
 	console.log([index, val]);
 	chart.addPoint(new Point(index, val));
-	needsToUpdate = true;
+	update();
 }
 
 var delay = 250;
@@ -81,7 +81,7 @@ document.getElementById('file-input').onchange = function() {
 		if(stringData !== null) {
 			var obj = JSON.parse(stringData);
 			chart = Object.assign(new Chart, obj);
-			needsToUpdate = true;
+			update();
 		}
 	}
 }
@@ -115,6 +115,7 @@ document.getElementById("submit-initial").addEventListener("click", function() {
 	chart.addPoint(new Point(1, parseFloat(x)));
 	chart.addPoint(new Point(2, parseFloat(y)));
 	chart.addPoint(new Point(3, parseFloat(z)));
+	update();
 });
 
 // Add additional points
@@ -127,4 +128,73 @@ document.getElementById("submit-add").addEventListener("click", function() {
 	}
 
 	chart.addPoint(new Point(chart.numberOfPoints + 1, parseFloat(x)));
+	update();
 });
+
+// Handle Time Interval dropdown
+document.getElementById("time-interval-drop").onchange = function() {
+	var val = document.getElementById("time-interval-drop").value;
+	if(val === "days")
+		chart.timeType = 0;
+	if(val === "weeks")
+		chart.timeType = 1;
+	if(val === "months")
+		chart.timeType = 2;
+	update();
+};
+
+// Handle Metric Type dropdown
+document.getElementById("work-metric-drop").onchange = function() {
+	var val = document.getElementById("work-metric-drop").value;
+	if(val === "kloc")
+		chart.metricType = 0;
+	if(val === "fp")
+		chart.metricType = 1;
+	update();
+};
+
+// |----------------------------------- HTML Element Label Updating -----------------------------------|
+
+function updateDropdowns() {
+	var timeDropdown = document.getElementById("time-interval-drop");
+	var metricDropdown = document.getElementById("work-metric-drop");
+	if(chart.timeType === 0) {
+		timeDropdown.value = "days";
+	}
+	else if(chart.timeType === 1) {
+		timeDropdown.value = "weeks";
+	}
+	else {
+		timeDropdown.value = "months";
+	}
+
+	if(chart.metricType === 0) {
+		metricDropdown.value = "kloc";
+	}
+	else {
+		metricDropdown.value = "fp";
+	}
+}
+
+function updateLabels() {
+	var max = 		document.getElementById("graph-max"),
+		min = 		document.getElementById("graph-min"),
+		mean = 		document.getElementById("graph-mean"),
+		median = 	document.getElementById("graph-median"),
+		deviation = document.getElementById("graph-deviation"),
+		variance = 	document.getElementById("graph-variance");
+
+	max.value = chart.max.toFixed(3);
+	min.value = chart.min.toFixed(3);
+	mean.value = chart.mean.toFixed(3);
+	median.value = chart.median.toFixed(3);
+	deviation.value = chart.stdDeviation.toFixed(3);
+	variance.value = chart.variance.toFixed(3);
+}
+
+// bring all these update functions into one for easier editing later on
+function update() {
+	updateDropdowns();
+	updateLabels();
+	needsToUpdate =  true;
+}

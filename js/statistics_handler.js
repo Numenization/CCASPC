@@ -1,3 +1,15 @@
+/* 
+
+statistics handler for CCASPC
+defines functionality for statistical calculations
+
+author: Christopher Ciolek
+
+Professor: Bruce Maxim
+Course: CIS 375.001, Software Engineering
+
+*/
+
 // Each funtion uses three points of decimal accuracy except for the median function
 var data = [{x:45,y:32},{x:1,y:3},{x:12,y:43},{x:4,y:23},{x:21,y:23},{x:12,y:5}]
 

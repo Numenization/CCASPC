@@ -1,3 +1,16 @@
+/* 
+
+data structures for CCASPC
+defines the necessary data structures and their behaviors
+
+co-authors: Christopher Ciolek
+			Nicholas Spencer
+
+Professor: Bruce Maxim
+Course: CIS 375.001, Software Engineering
+
+*/
+
 // chart class definition
 function Chart(metric=0, time=0) {
 	this.numberOfPoints = 0;

@@ -92,8 +92,13 @@ function drawGraph() {
 		strokeWeight(0);
 		textAlign(CENTER, CENTER);
 		text('Please enter at least 3 points of data.', width / 2, height / 2);
+		document.getElementById("initial-div").className = "relative-shown";
+		document.getElementById("running-div").className = "relative-hidden";
 		return;
 	}
+
+	document.getElementById("initial-div").className = "relative-hidden";
+	document.getElementById("running-div").className = "relative-shown";
 
 	// inner graph border
 	line(innerGraphBuffer, innerGraphBuffer, width - innerGraphBuffer / 2, innerGraphBuffer);
@@ -132,7 +137,7 @@ function drawGraph() {
 	}
 	else {
 		// sigma is 0, so we can't use it in calculations
-		yMin = avg- avg / 10;
+		yMin = avg - avg / 10;
 		yMax = avg + avg / 10;
 	}
 

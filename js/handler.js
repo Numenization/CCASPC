@@ -1,5 +1,15 @@
-// main handler for CCASPC
-// stores global variables and links up UI to functionality
+/* 
+
+main handler for CCASPC
+stores global variables and links up UI to functionality
+
+co-authors: Selawai Mona
+			Nicholas Spencer
+
+Professor: Burce Maxim
+Course: CIS 375.001, Software Engineering
+
+*/
 
 // globals
 
@@ -62,6 +72,22 @@ function download(stringData, fileName, fileType) {
 	document.body.removeChild(downloadObject);
 }
 
+// when we load a file, we need to be able to tell when that happens then actually load the data
+document.getElementById('file-input').onchange = function() {
+	var reader = new FileReader();
+	reader.readAsText(document.getElementById('file-input').files[0]);
+	reader.onload = function() {
+		var stringData = reader.result;
+		if(stringData !== null) {
+			var obj = JSON.parse(stringData);
+			chart = Object.assign(new Chart, obj);
+			needsToUpdate = true;
+		}
+	}
+}
+
+// |----------------------------------- HTML Element Event Linking -----------------------------------|
+
 // Save Button event listener
 document.getElementById("save-button0").addEventListener("click", function() {
 	if(!(chart !== null && chart instanceof Chart))
@@ -75,15 +101,30 @@ document.getElementById("load-button0").addEventListener("click", function() {
 	document.getElementById('file-input').click();
 });
 
-document.getElementById('file-input').onchange = function() {
-	var reader = new FileReader();
-	reader.readAsText(document.getElementById('file-input').files[0]);
-	reader.onload = function() {
-		var stringData = reader.result;
-		if(stringData !== null) {
-			var obj = JSON.parse(stringData);
-			chart = Object.assign(new Chart, obj);
-			needsToUpdate = true;
-		}
+// Add initial 3 points
+document.getElementById("submit-initial").addEventListener("click", function() {
+	var x = document.getElementById("first-point-text").value,
+		y = document.getElementById("second-point-text").value,
+		z = document.getElementById("third-point-text").value;
+
+	if(isNaN(x) || isNaN(y) || isNaN(z) || chart === null) {
+		console.log("invalid input in initial value fields");
+		return;
 	}
-}
+
+	chart.addPoint(new Point(1, parseFloat(x)));
+	chart.addPoint(new Point(2, parseFloat(y)));
+	chart.addPoint(new Point(3, parseFloat(z)));
+});
+
+// Add additional points
+document.getElementById("submit-add").addEventListener("click", function() {
+	var x = document.getElementById("add-point-text").value;
+
+	if(isNaN(x) || chart === null) {
+		console.log("invalid input in add point field");
+		return;
+	}
+
+	chart.addPoint(new Point(chart.numberOfPoints + 1, parseFloat(x)));
+});

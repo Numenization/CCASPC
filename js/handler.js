@@ -107,10 +107,11 @@ document.getElementById("submit-initial").addEventListener("click", function() {
 		y = document.getElementById("second-point-text").value,
 		z = document.getElementById("third-point-text").value;
 
-	if(isNaN(x) || isNaN(y) || isNaN(z) || chart === null) {
-		console.log("invalid input in initial value fields");
+	if(x.length === 0 || y.length === 0 || z.length === 0)
 		return;
-	}
+
+	if(x === null || y === null || z === null || isNaN(x) || isNaN(y) || isNaN(z) || chart === null)
+		return;
 
 	chart.addPoint(new Point(1, parseFloat(x)));
 	chart.addPoint(new Point(2, parseFloat(y)));
@@ -122,10 +123,11 @@ document.getElementById("submit-initial").addEventListener("click", function() {
 document.getElementById("submit-add").addEventListener("click", function() {
 	var x = document.getElementById("add-point-text").value;
 
-	if(isNaN(x) || chart === null) {
-		console.log("invalid input in add point field");
+	if(x.length === 0)
 		return;
-	}
+
+	if(x === null || isNaN(x) || chart === null)
+		return;
 
 	chart.addPoint(new Point(chart.numberOfPoints + 1, parseFloat(x)));
 	update();
@@ -187,7 +189,6 @@ function updateLabels() {
 	max.value = chart.max.toFixed(3);
 	min.value = chart.min.toFixed(3);
 	mean.value = chart.mean.toFixed(3);
-	median.value = chart.median.toFixed(3);
 	deviation.value = chart.stdDeviation.toFixed(3);
 	variance.value = chart.variance.toFixed(3);
 }

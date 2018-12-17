@@ -26,20 +26,30 @@ var dotSize = 4;
 var chart = new Chart();
 var needsToUpdate = false;
 
+// references to HTML elements
+var addButton = document.getElementById("submit-add");
+var fileInput = document.getElementById('file-input');
+var saveButton = document.getElementById("save-button0");
+var loadButton = document.getElementById("load-button0");
+var addInitialButton = document.getElementById("submit-initial");
+var addPointTextBox = document.getElementById("add-point-text");
+var firstPointTextbox = document.getElementById("first-point-text");
+var secondPointTextbox = document.getElementById("second-point-text");
+var thirdPointTextbox = document.getElementById("third-point-text");
+var timeIntervalDropdown = document.getElementById("time-interval-drop");
+var metricDropdown = document.getElementById("work-metric-drop");
+var maxLabel = document.getElementById("graph-max");
+var minLabel = document.getElementById("graph-min");
+var mean = document.getElementById("graph-mean");
+var deviation = document.getElementById("graph-deviation");
+var variance = document.getElementById("graph-variance");
+
 // test functions
 function addRandom() {
 	var index = chart.numberOfPoints + 1;
 	var val = Math.random() * 20 + 100;
 	console.log([index, val]);
 	chart.addPoint(new Point(index, val));
-}
-
-function addPoint() {
-	var index = chart.numberOfPoints + 1;
-	var val = parseFloat(document.getElementById('val').value);
-	console.log([index, val]);
-	chart.addPoint(new Point(index, val));
-	update();
 }
 
 var delay = 250;
@@ -73,9 +83,9 @@ function download(stringData, fileName, fileType) {
 }
 
 // when we load a file, we need to be able to tell when that happens then actually load the data
-document.getElementById('file-input').onchange = function() {
+fileInput.onchange = function() {
 	var reader = new FileReader();
-	reader.readAsText(document.getElementById('file-input').files[0]);
+	reader.readAsText(fileInput.files[0]);
 	reader.onload = function() {
 		var stringData = reader.result;
 		if(stringData !== null) {
@@ -89,7 +99,7 @@ document.getElementById('file-input').onchange = function() {
 // |----------------------------------- HTML Element Event Linking -----------------------------------|
 
 // Save Button event listener
-document.getElementById("save-button0").addEventListener("click", function() {
+saveButton.addEventListener("click", function() {
 	if(!(chart !== null && chart instanceof Chart))
 		return;
 	var stringData = JSON.stringify(chart);
@@ -97,15 +107,15 @@ document.getElementById("save-button0").addEventListener("click", function() {
 });
 
 // Load Button event listener
-document.getElementById("load-button0").addEventListener("click", function() {
-	document.getElementById('file-input').click();
+loadButton.addEventListener("click", function() {
+	fileInput.click();
 });
 
 // Add initial 3 points
-document.getElementById("submit-initial").addEventListener("click", function() {
-	var x = document.getElementById("first-point-text").value,
-		y = document.getElementById("second-point-text").value,
-		z = document.getElementById("third-point-text").value;
+addInitialButton.addEventListener("click", function() {
+	var x = firstPointTextbox.value,
+		y = secondPointTextbox.value,
+		z = thirdPointTextbox.value;
 
 	if(x.length === 0 || y.length === 0 || z.length === 0)
 		return;
@@ -120,8 +130,8 @@ document.getElementById("submit-initial").addEventListener("click", function() {
 });
 
 // Add additional points
-document.getElementById("submit-add").addEventListener("click", function() {
-	var x = document.getElementById("add-point-text").value;
+addButton.addEventListener("click", function() {
+	var x = addPointTextBox.value;
 
 	if(x.length === 0)
 		return;
@@ -134,8 +144,8 @@ document.getElementById("submit-add").addEventListener("click", function() {
 });
 
 // Handle Time Interval dropdown
-document.getElementById("time-interval-drop").onchange = function() {
-	var val = document.getElementById("time-interval-drop").value;
+timeIntervalDropdown.onchange = function() {
+	var val = timeIntervalDropdown.value;
 	if(val === "days")
 		chart.timeType = 0;
 	if(val === "weeks")
@@ -146,8 +156,8 @@ document.getElementById("time-interval-drop").onchange = function() {
 };
 
 // Handle Metric Type dropdown
-document.getElementById("work-metric-drop").onchange = function() {
-	var val = document.getElementById("work-metric-drop").value;
+metricDropdown.onchange = function() {
+	var val = metricDropdown.value;
 	if(val === "kloc")
 		chart.metricType = 0;
 	if(val === "fp")
@@ -158,16 +168,14 @@ document.getElementById("work-metric-drop").onchange = function() {
 // |----------------------------------- HTML Element Label Updating -----------------------------------|
 
 function updateDropdowns() {
-	var timeDropdown = document.getElementById("time-interval-drop");
-	var metricDropdown = document.getElementById("work-metric-drop");
 	if(chart.timeType === 0) {
-		timeDropdown.value = "days";
+		timeIntervalDropdown.value = "days";
 	}
 	else if(chart.timeType === 1) {
-		timeDropdown.value = "weeks";
+		timeIntervalDropdown.value = "weeks";
 	}
 	else {
-		timeDropdown.value = "months";
+		timeIntervalDropdown.value = "months";
 	}
 
 	if(chart.metricType === 0) {
@@ -179,15 +187,8 @@ function updateDropdowns() {
 }
 
 function updateLabels() {
-	var max = 		document.getElementById("graph-max"),
-		min = 		document.getElementById("graph-min"),
-		mean = 		document.getElementById("graph-mean"),
-		median = 	document.getElementById("graph-median"),
-		deviation = document.getElementById("graph-deviation"),
-		variance = 	document.getElementById("graph-variance");
-
-	max.value = chart.max.toFixed(3);
-	min.value = chart.min.toFixed(3);
+	maxLabel.value = chart.max.toFixed(3);
+	minLabel.value = chart.min.toFixed(3);
 	mean.value = chart.mean.toFixed(3);
 	deviation.value = chart.stdDeviation.toFixed(3);
 	variance.value = chart.variance.toFixed(3);
